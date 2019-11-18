@@ -26,6 +26,7 @@ program
   .option("-t, --timeout [ms]", "Set a max timeout of [ms]")
   .option("-x, --html", "output html file")
   .option("-b, --blockLocal", "Disallow access to filesystem for local files")
+  .option('--no-sandbox', "Allows Chromium to run without sandboxing")
   .option("--outline-tags [tags]", "Specifies that an outline should be " +
           "generated for the resulting PDF document. [tags] specifies which " +
           "HTML tags should be considered for that outline. " +
@@ -104,7 +105,7 @@ if (typeof input === "string") {
 }
 
 (async () => {
-  let printer = new Printer(headless, allowLocal, program.additionalScript);
+  let printer = new Printer(headless, allowLocal, program.noSandbox, program.additionalScript);
 
   printer.on("page", (page) => {
     if (page.position === 0) {

@@ -14,18 +14,26 @@ let scriptPath = paths[0] + "node_modules" + paths[paths.length-1];
 const PostProcesser = require("./postprocesser");
 
 class Printer extends EventEmitter {
-  constructor(headless, allowLocal, additionalScripts) {
+  constructor(headless, allowLocal, noSandbox, additionalScripts) {
     super();
     this.headless = headless !== false;
     this.allowLocal = allowLocal;
     this.pages = [];
+    this.noSandbox = noSandbox;
     this.additionalScripts = additionalScripts;
   }
 
   async setup() {
+    const puppeteerArgs = this.allowLocal
+      ? ["--allow-file-access-from-files", "--disable-dev-shm-usage"]
+      : ["--disable-dev-shm-usage"];
+    const noSandboxArgs = this.noSandbox
+      ? ["--no-sandbox"]
+      : [];
+    const args = [...puppeteerArgs, ...noSandboxArgs];
     const browser = await puppeteer.launch({
       headless: this.headless,
-      args: this.allowLocal ? ["--allow-file-access-from-files", "--disable-dev-shm-usage"] : ["--disable-dev-shm-usage"],
+      args: args,
       ignoreHTTPSErrors: true
     });
 
