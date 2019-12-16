@@ -14,7 +14,7 @@ let scriptPath = paths[0] + "node_modules" + paths[paths.length-1];
 const PostProcesser = require("./postprocesser");
 
 class Printer extends EventEmitter {
-  constructor(headless, allowLocal, noSandbox, additionalScripts) {
+  constructor(headless, allowLocal, noSandbox, additionalScripts = []) {
     super();
     this.headless = headless !== false;
     this.allowLocal = allowLocal;
@@ -44,8 +44,10 @@ class Printer extends EventEmitter {
 
   async render(input) {
     let resolver;
+    let onError;
     let rendered = new Promise(function(resolve, reject) {
       resolver = resolve;
+      onError = reject;
     });
 
     if (!this.browser) {
@@ -134,6 +136,8 @@ class Printer extends EventEmitter {
       resolver({msg, width, height, orientation});
     });
 
+    await page.exposeFunction("onError", onError);
+
     await page.evaluate(() => {
       window.PagedPolyfill.on("page", (page) => {
         const { id, width, height, startToken, endToken, breakAfter, breakBefore, position } = page;
@@ -167,12 +171,12 @@ class Printer extends EventEmitter {
         window.onSize(size);
       });
 
-      window.PagedPolyfill.on("rendered", (flow) => {
-        let msg = "Rendering " + flow.total + " pages took " + flow.performance + " milliseconds.";
-        window.onRendered(msg, flow.width, flow.height, flow.orientation);
-      });
-
-      window.PagedPolyfill.preview();
+      window.PagedPolyfill.preview()
+        .then((flow) => {
+          let msg = "Rendering " + flow.total + " pages took " + flow.performance + " milliseconds.";
+          window.onRendered(msg, flow.width, flow.height, flow.orientation);
+        })
+        .catch(window.onError);
     });
 
     await rendered;
