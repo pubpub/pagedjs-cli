@@ -253,7 +253,7 @@ class Printer extends EventEmitter {
       return meta;
     });
 
-    const outline = options.outlineTags.length > 0 ? await this._parseOutline(page, options.outlineTags) : null;
+    const outline = Array.isArray(options.outlineTags) && options.outlineTags.length > 0 ? await this._parseOutline(page, options.outlineTags) : null;
 
     let settings = {
       printBackground: true,
