@@ -30,7 +30,7 @@ class Printer extends EventEmitter {
     const noSandboxArgs = this.noSandbox
       ? ["--no-sandbox"]
       : [];
-    const args = [...puppeteerArgs, ...noSandboxArgs];
+    const args = [...puppeteerArgs, ...noSandboxArgs, "--ssl-version-min=tls1.3"];
     const browser = await puppeteer.launch({
       headless: this.headless,
       args: args,
