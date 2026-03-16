@@ -172,7 +172,7 @@ class Printer extends EventEmitter {
         window.onRendered(msg, flow.width, flow.height, flow.orientation);
       });
 
-      await page.evaluateHandle('document.fonts.ready');
+      await document.fonts.ready
 
       window.PagedPolyfill.preview();
     });
