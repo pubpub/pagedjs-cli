@@ -134,7 +134,7 @@ class Printer extends EventEmitter {
       resolver({msg, width, height, orientation});
     });
 
-    await page.evaluate(() => {
+    await page.evaluate(async () => {
       window.PagedPolyfill.on("page", (page) => {
         const { id, width, height, startToken, endToken, breakAfter, breakBefore, position } = page;
 
@@ -171,6 +171,8 @@ class Printer extends EventEmitter {
         let msg = "Rendering " + flow.total + " pages took " + flow.performance + " milliseconds.";
         window.onRendered(msg, flow.width, flow.height, flow.orientation);
       });
+
+      await document.fonts.ready
 
       window.PagedPolyfill.preview();
     });
