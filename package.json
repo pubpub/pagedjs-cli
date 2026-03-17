@@ -26,7 +26,7 @@
     "ora": "^4.0.2",
     "pagedjs": "0.1.34",
     "pdf-lib": "0.6.4",
-    "puppeteer": "^2.0.0",
+    "puppeteer": "^8.0.0",
     "replace-ext": "^1.0.0"
   },
   "devDependencies": {
